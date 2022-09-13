@@ -1,0 +1,15 @@
+---
+tuners:
+- hostname: hdhomerun01.bit13.local
+  useTLS: false
+  validateTLS: false
+- hostname: hdhomerun02.bit13.local
+  useTLS: false
+  validateTLS: false
+metrics:
+  port: 2001
+  # timeout:
+  #   server: 30
+  #   read: 15
+  #   write: 10
+  #   idle: 5
