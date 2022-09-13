@@ -8,6 +8,7 @@ tuners:
   validateTLS: false
 metrics:
   port: 2001
+  pollingInterval: 300
   # timeout:
   #   server: 30
   #   read: 15
