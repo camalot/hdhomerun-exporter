@@ -103,15 +103,6 @@ class HDHomeRuneMetrics:
 		self.fetch_update_status()
 		self.fetch_available_channels()
 		self.fetch_tuners()
-		# Fetch raw status data from the application
-		# resp = requests.get(url=f"http://localhost:{self.app_port}/status")
-		# status_data = resp.json()
-
-		# Update Prometheus metrics with application metrics
-		# self.current_requests.set(status_data["current_requests"])
-		# self.pending_requests.set(status_data["pending_requests"])
-		# self.total_uptime.set(status_data["total_uptime"])
-		# self.health.state(status_data["health"])
 
 	def build_url(self, tuner: TunerConfig, path: str):
 		scheme = "http"
@@ -126,9 +117,6 @@ def main():
 	for t in tuners:
 		print(f"{t['hostname']}")
 	print(f"{settings.metrics['port']}")
-	# polling_interval_seconds = int(os.getenv("POLLING_INTERVAL_SECONDS", "5"))
-	# app_port = int(os.getenv("APP_PORT", "80"))
-	# exporter_port = int(os.getenv("EXPORTER_PORT", "9877"))
 
 	app_metrics = HDHomeRuneMetrics(settings)
 	start_http_server(settings.metrics['port'])
