@@ -1,11 +1,11 @@
 ---
-tuners:
-- hostname: hdhomerun01.home.local
-  useTLS: false
-  validateTLS: false
+tuners: # A list of devices
+- hostname: hdhomerun01.home.local # host name or ip address of your hdhomerun
+  useTLS: false # determines if it should use HTTPS or HTTP
+  validateTLS: false # determines if certificates should be validated (if useTLS = true)
 - hostname: hdhomerun02.home.local
   useTLS: false
   validateTLS: false
 metrics:
-  port: 2001
-  pollingInterval: 300
+  port: 2001 # Port for the http server to host the metrics
+  pollingInterval: 300 # frequency, in seconds, to poll the metrics from the devices
