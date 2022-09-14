@@ -3,3 +3,5 @@
 __pycache__/**
 .env
 *.exe
+.hdhomerun.yml
+!/config/.hdhomerun.yml
