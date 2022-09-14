@@ -1,3 +1,4 @@
 prometheus_client~=0.0.9
-pyyaml
-dotenv
+pyyaml~=21.10.1
+python-dotenv==0.21.0
+requests~=2.28.1
