@@ -31,7 +31,7 @@ class MetricsConfig:
 		self.port = port
 		self.pollingInterval = pollingInterval
 
-class HDHomeRuneMetrics:
+class HDHomeRunMetrics:
 	"""
 	Representation of Prometheus metrics and loop to fetch and transform
 	application metrics into Prometheus metrics.
@@ -126,7 +126,7 @@ def main():
 	settings = AppConfig(config_file)
 
 	print(f"start listening on :{settings.metrics['port']}")
-	app_metrics = HDHomeRuneMetrics(settings)
+	app_metrics = HDHomeRunMetrics(settings)
 	start_http_server(settings.metrics['port'])
 	app_metrics.run_metrics_loop()
 
