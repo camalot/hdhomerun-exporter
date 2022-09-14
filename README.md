@@ -10,6 +10,38 @@ A prometheus exporter for hdhomerun devices on your network.
 - `hdhomerun_tuners_available`: Number of available tuners
 - `hdhomerun_update_available`: Indicates if there is a system update
 - `hdhomerun_up`: Indicates if the service is able to be polled
+
+## SAMPLE
+```
+# HELP hdhomerun_tuners_available_total Total available tuners
+# TYPE hdhomerun_tuners_available_total gauge
+hdhomerun_tuners_available_total{host="hdhomerun01.home.local"} 0.0
+hdhomerun_tuners_available_total{host="hdhomerun02.home.local"} 4.0
+# HELP hdhomerun_channels_available_total Total number of channels
+# TYPE hdhomerun_channels_available_total gauge
+hdhomerun_channels_available_total{host="hdhomerun01.home.local"} 0.0
+hdhomerun_channels_available_total{host="hdhomerun02.home.local"} 102.0
+# HELP hdhomerun_tuners_in_use Number of tuners currently in use
+# TYPE hdhomerun_tuners_in_use gauge
+hdhomerun_tuners_in_use{host="hdhomerun01.home.local"} 0.0
+hdhomerun_tuners_in_use{host="hdhomerun02.home.local"} 0.0
+# HELP hdhomerun_tuners_available Number of available tuners
+# TYPE hdhomerun_tuners_available gauge
+hdhomerun_tuners_available{host="hdhomerun01.home.local"} 0.0
+hdhomerun_tuners_available{host="hdhomerun02.home.local"} 4.0
+# HELP hdhomerun_update_available Indicates if there is a system update
+# TYPE hdhomerun_update_available gauge
+hdhomerun_update_available{host="hdhomerun01.home.local"} 0.0
+hdhomerun_update_available{host="hdhomerun02.home.local"} 0.0
+# HELP hdhomerun_up Indicates if the service is able to be polled
+# TYPE hdhomerun_up gauge
+hdhomerun_up{host="hdhomerun01.home.local",service="fetch_update_status"} 0.0
+hdhomerun_up{host="hdhomerun02.home.local",service="fetch_update_status"} 1.0
+hdhomerun_up{host="hdhomerun01.home.local",service="fetch_available_channels"} 0.0
+hdhomerun_up{host="hdhomerun02.home.local",service="fetch_available_channels"} 1.0
+hdhomerun_up{host="hdhomerun01.home.local",service="fetch_tuners"} 0.0
+hdhomerun_up{host="hdhomerun02.home.local",service="fetch_tuners"} 1.0
+```
 # CONFIGURATION
 
 All configuration is defined in a yaml file. Default location of the file: `./config/.hdhomerun.yml`. The location of this file can be set via an environment variable `HDHR_CONFIG_FILE`.

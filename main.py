@@ -75,6 +75,10 @@ class HDHomeRunMetrics:
 				self.tuners_available.labels(host=tuner.hostname).set(totalTuners - inUse)
 				self.up.labels(host=tuner.hostname, service="fetch_tuners").set(1)
 			except Exception as e:
+				self.tuners_available_total.labels(host=tuner.hostname).set(0)
+				self.tuners_in_use.labels(host=tuner.hostname).set(0)
+				self.tuners_available.labels(host=tuner.hostname).set(0)
+
 				self.up.labels(host=tuner.hostname, service="fetch_tuners").set(0)
 				print(e)
 	def fetch_update_status(self):
@@ -89,6 +93,7 @@ class HDHomeRunMetrics:
 					self.update_available.labels(tuner.hostname).set(0)
 				self.up.labels(host=tuner.hostname, service="fetch_update_status").set(1)
 			except Exception as e:
+				self.update_available.labels(tuner.hostname).set(0)
 				self.up.labels(host=tuner.hostname, service="fetch_update_status").set(0)
 				print(e)
 	def fetch_available_channels(self):
@@ -100,6 +105,7 @@ class HDHomeRunMetrics:
 				self.channels_available_total.labels(tuner.hostname).set(len(data))
 				self.up.labels(host=tuner.hostname, service="fetch_available_channels").set(1)
 			except Exception as e:
+				self.channels_available_total.labels(tuner.hostname).set(0)
 				self.up.labels(host=tuner.hostname, service="fetch_available_channels").set(0)
 				print(e)
 
