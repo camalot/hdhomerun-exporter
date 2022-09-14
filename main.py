@@ -7,7 +7,9 @@ import requests
 import yaml
 import codecs
 import re
+from dotenv import load_dotenv, find_dotenv
 
+load_dotenv(find_dotenv())
 class AppConfig:
 	def __init__(self, file):
 		try:
@@ -49,6 +51,7 @@ class HDHomeRuneMetrics:
 		"""Metrics fetching loop"""
 
 		while True:
+			print(f"begin metrics fetch")
 			self.fetch()
 			time.sleep(self.polling_interval_seconds)
 
@@ -109,15 +112,20 @@ class HDHomeRuneMetrics:
 		if tuner.useTls:
 			scheme = "https"
 		return f"{scheme}://{tuner.hostname}/{path}"
+
+def dict_get(dictionary, key, default_value = None):
+    if key in dictionary.keys():
+        return dictionary[key] or default_value
+    else:
+        return default_value
+
 def main():
 	"""Main entry point"""
+	config_file = dict_get(os.environ, "HDHR_CONFIG_FILE", default_value="./config/.hdhomerun.yml")
+	print(f"Using config file {config_file}")
+	settings = AppConfig(config_file)
 
-	settings = AppConfig("./.hdhomerun.yml")
-	tuners = settings.tuners
-	for t in tuners:
-		print(f"{t['hostname']}")
-	print(f"{settings.metrics['port']}")
-
+	print(f"start listening on :{settings.metrics['port']}")
 	app_metrics = HDHomeRuneMetrics(settings)
 	start_http_server(settings.metrics['port'])
 	app_metrics.run_metrics_loop()
