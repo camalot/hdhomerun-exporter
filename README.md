@@ -9,7 +9,7 @@ A prometheus exporter for hdhomerun devices on your network.
 - `hdhomerun_tuners_in_use`: Number of tuners currently in use
 - `hdhomerun_tuners_available`: Number of available tuners
 - `hdhomerun_update_available`: Indicates if there is a system update
-
+- `hdhomerun_up`: Indicates if the service is able to be polled
 # CONFIGURATION
 
 All configuration is defined in a yaml file. Default location of the file: `./config/.hdhomerun.yml`. The location of this file can be set via an environment variable `HDHR_CONFIG_FILE`.

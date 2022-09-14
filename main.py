@@ -46,7 +46,7 @@ class HDHomeRunMetrics:
 			self.tuners_in_use = Gauge(namespace=self.namespace, name=f"tuners_in_use", documentation="Number of tuners currently in use", labelnames=["host"])
 			self.tuners_available = Gauge(namespace=self.namespace, name=f"tuners_available", documentation="Number of available tuners", labelnames=["host"])
 			self.update_available = Gauge(namespace=self.namespace, name=f"update_available", documentation="Indicates if there is a system update", labelnames=["host"])
-
+			self.up = Gauge(namespace=self.namespace, name="up", documentation="Indicates if the service is able to be polled", labelnames=["host", "service"])
 	def run_metrics_loop(self):
 		"""Metrics fetching loop"""
 
@@ -57,9 +57,8 @@ class HDHomeRunMetrics:
 
 	def fetch_tuners(self):
 		for t in self.config.tuners:
+			tuner = TunerConfig(t['hostname'], t['useTLS'], t['validateTLS'])
 			try:
-
-				tuner = TunerConfig(t['hostname'], t['useTLS'], t['validateTLS'])
 				resp = requests.get(url=self.build_url(tuner, "tuners.html"), timeout=5)
 				data = resp.text
 				regex = r"<tr>\s*<td>(?P<tuner>[^<]+)</td>\s*<td>(?P<state>[^<]+)</td></tr>"
@@ -71,31 +70,37 @@ class HDHomeRunMetrics:
 					totalTuners += 1
 					if match.group(2) != "not in use" and match.group(2) != "none":
 							inUse += 1
-				self.tuners_available_total.labels(tuner.hostname).set(totalTuners)
-				self.tuners_in_use.labels(tuner.hostname).set(inUse)
-				self.tuners_available.labels(tuner.hostname).set(totalTuners - inUse)
+				self.tuners_available_total.labels(host=tuner.hostname).set(totalTuners)
+				self.tuners_in_use.labels(host=tuner.hostname).set(inUse)
+				self.tuners_available.labels(host=tuner.hostname).set(totalTuners - inUse)
+				self.up.labels(host=tuner.hostname, service="fetch_tuners").set(1)
 			except Exception as e:
+				self.up.labels(host=tuner.hostname, service="fetch_tuners").set(0)
 				print(e)
 	def fetch_update_status(self):
 		for t in self.config.tuners:
+			tuner = TunerConfig(t['hostname'], t['useTLS'], t['validateTLS'])
 			try:
-				tuner = TunerConfig(t['hostname'], t['useTLS'], t['validateTLS'])
 				resp = requests.get(url=self.build_url(tuner, "upgrade_status.json"), timeout=5)
 				data = resp.json()
 				if "UpgradeAvailable" in data:
 					self.update_available.labels(tuner.hostname).set(data["UpgradeAvailable"])
 				else:
 					self.update_available.labels(tuner.hostname).set(0)
+				self.up.labels(host=tuner.hostname, service="fetch_update_status").set(1)
 			except Exception as e:
+				self.up.labels(host=tuner.hostname, service="fetch_update_status").set(0)
 				print(e)
 	def fetch_available_channels(self):
 		for t in self.config.tuners:
+			tuner = TunerConfig(t['hostname'], t['useTLS'], t['validateTLS'])
 			try:
-				tuner = TunerConfig(t['hostname'], t['useTLS'], t['validateTLS'])
 				resp = requests.get(url=self.build_url(tuner, "lineup.json?show=found"), timeout=5)
 				data = resp.json()
 				self.channels_available_total.labels(tuner.hostname).set(len(data))
+				self.up.labels(host=tuner.hostname, service="fetch_available_channels").set(1)
 			except Exception as e:
+				self.up.labels(host=tuner.hostname, service="fetch_available_channels").set(0)
 				print(e)
 
 	def fetch(self):
