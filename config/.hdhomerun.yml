@@ -1,0 +1,11 @@
+---
+tuners:
+- hostname: hdhomerun01.home.local
+  useTLS: false
+  validateTLS: false
+- hostname: hdhomerun02.home.local
+  useTLS: false
+  validateTLS: false
+metrics:
+  port: 2001
+  pollingInterval: 300

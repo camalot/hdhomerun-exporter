@@ -1,0 +1,28 @@
+version: '3.7'
+networks:
+  internal:
+    driver: bridge
+services:
+  hdhomerun-exporter:
+    user: "1000:1000"
+    hostname: hdhomerun-exporter
+    container_name: hdhomerun-exporter
+    image: ghcr.io/camalot/hdhomerun-exporter:latest
+    deploy:
+      resources:
+        limits:
+          cpus: '0.2'
+          memory: 128M
+        reservations:
+          cpus: '0.1'
+          memory: 64M
+    volumes:
+    - /etc/localtime:/etc/localtime:ro
+    - ./config:/config:ro
+    environment:
+      TZ: 'America/Chicago'
+      PUID: 1000
+      PGID: 100 #everyone
+      HDHR_CONFIG_FILE: /config/.hdhomerun.yml
+    networks:
+    - internal
