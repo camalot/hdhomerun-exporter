@@ -31,6 +31,16 @@ class MetricsConfig:
 		self.port = port
 		self.pollingInterval = pollingInterval
 
+class DeviceSystemInfo:
+	def __init__(self, model: str, firmware: str, device_id: str, mac_address: str, ip_address: str, subnet_mask: str):
+		self.model = model
+		self.firmware = firmware
+		self.device_id = device_id
+		self.mac_address = mac_address
+		self.ip_address = ip_address
+		self.subnet_mask = subnet_mask
+
+
 class HDHomeRunMetrics:
 	"""
 	Representation of Prometheus metrics and loop to fetch and transform
@@ -107,6 +117,44 @@ class HDHomeRunMetrics:
 			except Exception as e:
 				self.channels_available_total.labels(tuner.hostname).set(0)
 				self.up.labels(host=tuner.hostname, service="fetch_available_channels").set(0)
+				print(e)
+
+	def fetch_system_info(self):
+		for t in self.config.tuners:
+			tuner = TunerConfig(t['hostname'], t['useTLS'], t['validateTLS'])
+			try:
+				resp = requests.get(url=self.build_url(tuner, "tuners.html"), timeout=5)
+				data = resp.text
+				regex = r"<tr>\s*<td>([^<]+)</td>\s*<td>([^<]+)</td></tr>"
+
+				matches = re.finditer(regex, data, re.MULTILINE)
+				for matchNum, match in enumerate(matches, start=1):
+
+					attr:str = match.group(1)
+					val:str = match.group(2)
+					model:str = ""
+					firmware:str = ""
+					deviceId:str = ""
+					macAddr:str = ""
+					ipAddr:str = ""
+					subnetMask:str = ""
+					if attr == "Hardware Model":
+						model = val
+					elif attr == "Firmware Version":
+						firmware = val
+					elif attr == "Device ID":
+						deviceId = val
+					elif attr == "MAC Address":
+						macAddr = val
+					elif attr == "IP Address":
+						ipAddr = val
+					elif attr == "Subnet Mask":
+						subnetMask = val
+
+					sysInfo = DeviceSystemInfo(model=model, firmware=firmware, device_id=deviceId, mac_address=macAddr, ip_address=ipAddr, subnet_mask=subnetMask)
+					
+			except Exception as e:
+
 				print(e)
 
 	def fetch(self):
